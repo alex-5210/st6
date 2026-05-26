@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0F172A">
+
+<title>StatMind AI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow-x:hidden;
+}
+
+body{
+    background:#0F172A;
+    color:white;
+    touch-action:manipulation;
+    overscroll-behavior:none;
+    user-select:none;
+}
+
+.container{
+    max-width:500px;
+    margin:auto;
+    padding:20px;
+    padding-bottom:120px;
+}
+
+.page{
+    display:none;
+    animation:fade 0.4s ease;
+}
+
+.active-page{
+    display:block;
+}
+
+@keyframes fade{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+.logo{
+    width:75px;
+    height:75px;
+
+    border-radius:24px;
+
+    background:linear-gradient(
+        135deg,
+        #38BDF8,
+        #06B6D4
+    );
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:34px;
+
+    box-shadow:
+    0 10px 30px rgba(56,189,248,0.35);
+
+}
+
+.title{
+    margin-top:18px;
+    font-size:34px;
+    font-weight:700;
+}
+
+.subtitle{
+    color:#94A3B8;
+    margin-top:6px;
+    font-size:15px;
+}
+
+.card{
+
+    margin-top:25px;
+
+    background:linear-gradient(
+        135deg,
+        #1E293B,
+        #111827
+    );
+
+    border-radius:28px;
+
+    padding:25px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.25);
+
+    border:1px solid rgba(255,255,255,0.04);
+
+}
+
+.score{
+    font-size:70px;
+    font-weight:700;
+    color:#38BDF8;
+    margin-top:10px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    margin-top:20px;
+}
+
+.small-card{
+
+    background:#111827;
+
+    border-radius:22px;
+
+    padding:20px;
+
+}
+
+.small-card h3{
+    color:#CBD5E1;
+    font-size:14px;
+}
+
+.small-card p{
+    margin-top:10px;
+    font-size:30px;
+    font-weight:700;
+    color:#38BDF8;
+}
+
+.input-group{
+    margin-bottom:18px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    color:#CBD5E1;
+}
+
+.input-group input{
+
+    width:100%;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#0F172A;
+
+    color:white;
+
+    font-size:16px;
+
+    outline:none;
+
+}
+
+button{
+
+    width:100%;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:22px;
+
+    background:linear-gradient(
+        135deg,
+        #38BDF8,
+        #06B6D4
+    );
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    margin-top:10px;
+
+}
+
+.ai-box{
+
+    background:#0F172A;
+
+    border-radius:22px;
+
+    padding:20px;
+
+    margin-top:20px;
+
+    line-height:1.8;
+
+    color:#CBD5E1;
+
+}
+
+.history-item{
+
+    background:#0F172A;
+
+    padding:16px;
+
+    border-radius:20px;
+
+    margin-top:14px;
+
+}
+
+.history-score{
+    color:#38BDF8;
+    font-size:22px;
+    font-weight:700;
+}
+
+.history-date{
+    color:#64748B;
+}
+
+.bottom-nav{
+
+    position:fixed;
+
+    bottom:0;
+    left:0;
+
+    width:100%;
+
+    background:#111827;
+
+    display:none;
+
+    justify-content:space-around;
+
+    padding:14px 0;
+
+    border-top:
+    1px solid rgba(255,255,255,0.05);
+
+    z-index:999;
+
+    backdrop-filter:blur(10px);
+
+}
+
+.nav-item{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    color:#94A3B8;
+
+    font-size:12px;
+
+}
+
+.active-nav{
+    color:#38BDF8;
+}
+
+canvas{
+    margin-top:20px;
+}
+
+.profile-avatar{
+
+    width:100px;
+    height:100px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        #38BDF8,
+        #06B6D4
+    );
+
+    margin:auto;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:42px;
+
+}
+
+.profile-box{
+    text-align:center;
+}
+
+.stat-highlight{
+    color:#22C55E !important;
+}
+
+#appContent{
+    display:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LOGIN -->
+
+<div id="loginScreen">
+
+<div class="logo">
+🧠
+</div>
+
+<div class="title">
+StatMind AI
+</div>
+
+<div class="subtitle">
+Professional Student Analytics
+</div>
+
+<div class="card">
+
+<h2 style="margin-bottom:20px;">
+Login / Register
+</h2>
+
+<div class="input-group">
+
+<label>Email</label>
+
+<input
+type="email"
+id="email"
+placeholder="Enter your email">
+
+</div>
+
+<div class="input-group">
+
+<label>Password</label>
+
+<input
+type="password"
+id="password"
+placeholder="Enter your password">
+
+</div>
+
+<button onclick="register()">
+Register
+</button>
+
+<button onclick="login()">
+Login
+</button>
+
+</div>
+
+</div>
+
+<!-- APP -->
+
+<div id="appContent">
+
+<!-- HOME -->
+
+<div class="page active-page" id="homePage">
+
+<div class="logo">
+🧠
+</div>
+
+<div class="title">
+StatMind AI
+</div>
+
+<div class="subtitle">
+AI-powered student productivity analytics
+</div>
+
+<div class="card">
+
+<h2>Productivity Score</h2>
+
+<div class="score" id="score">
+0%
+</div>
+
+<p id="analysisText">
+Start analyzing your habits.
+</p>
+
+</div>
+
+<div class="grid">
+
+<div class="small-card">
+<h3>Study Hours</h3>
+<p id="studyDisplay">0h</p>
+</div>
+
+<div class="small-card">
+<h3>Sleep Quality</h3>
+<p id="sleepDisplay">0%</p>
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Daily Analytics</h2>
+
+<div class="input-group">
+<label>Study Hours</label>
+<input type="number" id="study">
+</div>
+
+<div class="input-group">
+<label>Sleep Hours</label>
+<input type="number" id="sleep">
+</div>
+
+<div class="input-group">
+<label>Social Media Hours</label>
+<input type="number" id="social">
+</div>
+
+<div class="input-group">
+<label>Academic Grade</label>
+<input type="number" id="grade">
+</div>
+
+<button onclick="analyzeData()">
+Analyze Data
+</button>
+
+<div class="ai-box" id="analysisBox">
+Waiting for AI analysis...
+</div>
+
+</div>
+
+</div>
+
+<!-- ANALYTICS -->
+
+<div class="page" id="analyticsPage">
+
+<div class="title">
+Analytics
+</div>
+
+<div class="subtitle">
+Detailed performance statistics
+</div>
+
+<div class="card">
+
+<canvas id="analyticsChart"></canvas>
+
+</div>
+
+<div class="card">
+
+<h2>
+Recent Activity
+</h2>
+
+<div id="historyContainer">
+
+</div>
+
+</div>
+
+</div>
+
+<!-- COACH -->
+
+<div class="page" id="coachPage">
+
+<div class="title">
+AI Coach
+</div>
+
+<div class="subtitle">
+Personalized recommendations
+</div>
+
+<div class="card">
+
+<div class="ai-box">
+
+<h2>
+🤖 Smart Recommendation
+</h2>
+
+<p id="coachText">
+
+Analyze your habits to receive intelligent suggestions.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- PROFILE -->
+
+<div class="page" id="profilePage">
+
+<div class="title">
+Profile
+</div>
+
+<div class="subtitle">
+Academic performance profile
+</div>
+
+<div class="card profile-box">
+
+<div class="profile-avatar">
+👤
+</div>
+
+<h2 style="margin-top:20px;">
+Student User
+</h2>
+
+<p style="
+color:#94A3B8;
+margin-top:10px;
+">
+
+StatMind AI Premium
+
+</p>
+
+<div class="grid">
+
+<div class="small-card">
+<h3>Total Analyses</h3>
+<p id="analysisCount">
+0
+</p>
+</div>
+
+<div class="small-card">
+<h3>Best Score</h3>
+<p id="bestScore"
+class="stat-highlight">
+0%
+</p>
+</div>
+
+</div>
+
+<button onclick="logout()">
+Logout
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- NAVIGATION -->
+
+<div class="bottom-nav">
+
+<div
+class="nav-item active-nav"
+onclick="showPage('homePage',this)">
+
+<div>🏠</div>
+<span>Home</span>
+
+</div>
+
+<div
+class="nav-item"
+onclick="showPage('analyticsPage',this)">
+
+<div>📊</div>
+<span>Analytics</span>
+
+</div>
+
+<div
+class="nav-item"
+onclick="showPage('coachPage',this)">
+
+<div>🤖</div>
+<span>Coach</span>
+
+</div>
+
+<div
+class="nav-item"
+onclick="showPage('profilePage',this)">
+
+<div>👤</div>
+<span>Profile</span>
+
+</div>
+
+</div>
+
+<!-- FIREBASE -->
+
+<script type="module">
+
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged
+
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA8EWD2qwgoWmeMIBSW0zdJ0HxDQ4B58Ok",
+
+authDomain: "statmind-ai.firebaseapp.com",
+
+projectId: "statmind-ai",
+
+storageBucket: "statmind-ai.firebasestorage.app",
+
+messagingSenderId: "422755664645",
+
+appId: "1:422755664645:web:52b2b8eb5c70d3d5566d6c"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+function showApp(){
+
+    document
+    .getElementById('loginScreen')
+    .style.display = 'none';
+
+    document
+    .getElementById('appContent')
+    .style.display = 'block';
+
+    document
+    .querySelector('.bottom-nav')
+    .style.display = 'flex';
+
+}
+
+function showLogin(){
+
+    document
+    .getElementById('loginScreen')
+    .style.display = 'block';
+
+    document
+    .getElementById('appContent')
+    .style.display = 'none';
+
+    document
+    .querySelector('.bottom-nav')
+    .style.display = 'none';
+
+}
+
+window.register = async function(){
+
+    const email =
+    document
+    .getElementById('email')
+    .value;
+
+    const password =
+    document
+    .getElementById('password')
+    .value;
+
+    try{
+
+        await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        alert('User created successfully');
+
+        showApp();
+
+    }
+
+    catch(error){
+
+        alert(error.message);
+
+    }
+
+}
+
+window.login = async function(){
+
+    const email =
+    document
+    .getElementById('email')
+    .value;
+
+    const password =
+    document
+    .getElementById('password')
+    .value;
+
+    try{
+
+        await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        alert('Login successful');
+
+        showApp();
+
+    }
+
+    catch(error){
+
+        alert(error.message);
+
+    }
+
+}
+
+window.logout = async function(){
+
+    await signOut(auth);
+
+    showLogin();
+
+}
+
+onAuthStateChanged(auth,(user)=>{
+
+    if(user){
+
+        showApp();
+
+    }
+
+    else{
+
+        showLogin();
+
+    }
+
+});
+
+</script>
+
+<script>
+
+let chart;
+
+function showPage(pageId,element){
+
+    document
+    .querySelectorAll('.page')
+    .forEach(page => {
+
+        page.classList.remove('active-page');
+
+    });
+
+    document
+    .getElementById(pageId)
+    .classList.add('active-page');
+
+    document
+    .querySelectorAll('.nav-item')
+    .forEach(item => {
+
+        item.classList.remove('active-nav');
+
+    });
+
+    element.classList.add('active-nav');
+
+}
+
+function analyzeData(){
+
+    let study =
+    parseFloat(
+        document
+        .getElementById('study')
+        .value
+    );
+
+    let sleep =
+    parseFloat(
+        document
+        .getElementById('sleep')
+        .value
+    );
+
+    let social =
+    parseFloat(
+        document
+        .getElementById('social')
+        .value
+    );
+
+    let grade =
+    parseFloat(
+        document
+        .getElementById('grade')
+        .value
+    );
+
+    if(
+        isNaN(study) ||
+        isNaN(sleep) ||
+        isNaN(social) ||
+        isNaN(grade)
+    ){
+
+        alert('Complete all fields');
+        return;
+
+    }
+
+    let score = Math.round(
+        (
+            study * 20 +
+            sleep * 10 +
+            grade * 0.8 -
+            social * 5
+        )
+    );
+
+    if(score > 100){
+        score = 100;
+    }
+
+    if(score < 0){
+        score = 0;
+    }
+
+    let analysis = '';
+
+    if(score >= 85){
+
+        analysis =
+        'Excellent productivity detected. Statistical analysis predicts strong academic performance.';
+
+    }
+
+    else if(score >= 60){
+
+        analysis =
+        'Good productivity level detected. Reducing social media usage may improve results significantly.';
+
+    }
+
+    else{
+
+        analysis =
+        'Low productivity detected. Increase study time and improve sleep habits.';
+
+    }
+
+    document
+    .getElementById('score')
+    .innerText = score + '%';
+
+    document
+    .getElementById('studyDisplay')
+    .innerText = study + 'h';
+
+    document
+    .getElementById('sleepDisplay')
+    .innerText =
+    Math.round((sleep / 8) * 100)
+    + '%';
+
+    document
+    .getElementById('analysisText')
+    .innerText = analysis;
+
+    document
+    .getElementById('analysisBox')
+    .innerText = analysis;
+
+    document
+    .getElementById('coachText')
+    .innerText = analysis;
+
+    updateChart(
+        study,
+        sleep,
+        social,
+        grade
+    );
+
+    saveHistory(
+        study,
+        sleep,
+        social,
+        grade,
+        score
+    );
+
+}
+
+function updateChart(
+    study,
+    sleep,
+    social,
+    grade
+){
+
+    const ctx =
+    document
+    .getElementById('analyticsChart');
+
+    if(chart){
+        chart.destroy();
+    }
+
+    chart = new Chart(ctx,{
+
+        type:'bar',
+
+        data:{
+
+            labels:[
+                'Study',
+                'Sleep',
+                'Social',
+                'Grade'
+            ],
+
+            datasets:[{
+
+                label:'Performance',
+
+                data:[
+                    study,
+                    sleep,
+                    social,
+                    grade
+                ],
+
+                backgroundColor:[
+                    '#38BDF8',
+                    '#06B6D4',
+                    '#9333EA',
+                    '#22C55E'
+                ],
+
+                borderRadius:15
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            plugins:{
+
+                legend:{
+                    labels:{
+                        color:'white'
+                    }
+                }
+
+            },
+
+            scales:{
+
+                x:{
+                    ticks:{
+                        color:'white'
+                    }
+                },
+
+                y:{
+                    ticks:{
+                        color:'white'
+                    }
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+function saveHistory(
+    study,
+    sleep,
+    social,
+    grade,
+    score
+){
+
+    let history =
+    JSON.parse(
+        localStorage
+        .getItem('history')
+    ) || [];
+
+    history.push({
+
+        study,
+        sleep,
+        social,
+        grade,
+        score,
+
+        date:new Date()
+        .toLocaleString()
+
+    });
+
+    localStorage.setItem(
+        'history',
+        JSON.stringify(history)
+    );
+
+    loadHistory();
+
+}
+
+function loadHistory(){
+
+    let history =
+    JSON.parse(
+        localStorage
+        .getItem('history')
+    ) || [];
+
+    let container =
+    document
+    .getElementById('historyContainer');
+
+    container.innerHTML = '';
+
+    history
+    .reverse()
+    .slice(0,5)
+    .forEach(item => {
+
+        container.innerHTML += `
+
+        <div class="history-item">
+
+            <div class="history-score">
+
+                ${item.score}%
+
+            </div>
+
+            <p style="
+            margin-top:10px;
+            line-height:1.7;
+            color:#CBD5E1;
+            ">
+
+                Study: ${item.study}h
+                <br>
+
+                Sleep: ${item.sleep}h
+                <br>
+
+                Grade: ${item.grade}
+
+            </p>
+
+            <small class="history-date">
+
+                ${item.date}
+
+            </small>
+
+        </div>
+
+        `;
+
+    });
+
+    document
+    .getElementById('analysisCount')
+    .innerText = history.length;
+
+    if(history.length > 0){
+
+        let best =
+        Math.max(
+            ...history.map(
+                item => item.score
+            )
+        );
+
+        document
+        .getElementById('bestScore')
+        .innerText = best + '%';
+
+    }
+
+}
+
+window.onload = function(){
+
+    loadHistory();
+
+}
+
+</script>
+
+</body>
+</html>
